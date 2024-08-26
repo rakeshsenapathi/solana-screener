@@ -4,6 +4,7 @@ node_modules/*
 
 // common to all apps
 apps/*/node_modules/*
+apps/*/package-lock.json
 apps/*/.next
 apps/*/out
 .env

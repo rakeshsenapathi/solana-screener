@@ -11,12 +11,15 @@ import {
 } from '@/components/ui/table'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
+import { Skeleton } from '@/components/ui/skeleton'
+import { Spinner } from './Spinner'
 
 interface DashboardProps {
     lpTokens: Token[]
+    loading: boolean
 }
 
-const PopulateTableBody: React.FC<DashboardProps> = ({ lpTokens }) => {
+const PopulateTableBody: React.FC<DashboardProps> = ({ lpTokens, loading }) => {
     const router = useRouter()
 
     const handleNavigate = (token: Token) => {
@@ -24,6 +27,14 @@ const PopulateTableBody: React.FC<DashboardProps> = ({ lpTokens }) => {
             const val = token.tokenA
             router.push(`token/${val}`)
         }
+    }
+
+    if (loading) {
+        return (
+            <div className="relative w-screen min-h-screen">
+                <Spinner />
+            </div>
+        )
     }
 
     return (
@@ -53,9 +64,9 @@ const PopulateTableBody: React.FC<DashboardProps> = ({ lpTokens }) => {
     )
 }
 
-export const Dashboard: React.FC<DashboardProps> = ({ lpTokens }) => {
+export const Dashboard: React.FC<DashboardProps> = ({ lpTokens, loading }) => {
     return (
-        <div className="m-3 rounded-lg border-[#242424] border-[0.5px] bg-[#171616]">
+        <div className="m-3 rounded-lg border-[#242424] border-[0.5px] bg-[#171616]  hover:border-[#407ED2] transition-all duration-300">
             <Table>
                 <TableHeader>
                     <TableRow>
@@ -64,7 +75,7 @@ export const Dashboard: React.FC<DashboardProps> = ({ lpTokens }) => {
                         </TableHead>
                     </TableRow>
                 </TableHeader>
-                <PopulateTableBody lpTokens={lpTokens} />
+                <PopulateTableBody lpTokens={lpTokens} loading={loading} />
             </Table>
         </div>
     )

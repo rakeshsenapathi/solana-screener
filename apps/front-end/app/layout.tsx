@@ -21,21 +21,23 @@ export default function RootLayout({
     children: React.ReactNode
 }>) {
     return (
-        <html lang="en">
+        <html lang="en" className="min-h-screen">
             <body
                 className={cn(
-                    'min-h-screen bg-background font-sans antialiased bg-[#0A0A0A]',
+                    'bg-background font-sans antialiased bg-[#0A0A0A]',
                     fontSans.variable
                 )}
             >
-                <ThemeProvider
-                    attribute="class"
-                    defaultTheme="dark"
-                    enableSystem
-                >
-                    <Header />
-                    {children}
-                </ThemeProvider>
+                <div className="flex flex-col h-full">
+                    <ThemeProvider
+                        attribute="class"
+                        defaultTheme="dark"
+                        enableSystem
+                    >
+                        <Header />
+                        <div className="flex-grow">{children}</div>
+                    </ThemeProvider>
+                </div>
             </body>
         </html>
     )

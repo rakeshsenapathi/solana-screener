@@ -6,14 +6,16 @@ import { useEffect, useState } from 'react'
 
 export default function Home() {
     const [lpTokens, setLpTokens] = useState<Token[]>([])
+    const [loading, setLoading] = useState<boolean>(false)
     useEffect(() => {
+        setLoading(true)
         const ws = new WebSocket(`ws://localhost:4000`)
-
         ws.onopen = () => {
             console.log('web socket client connection opened')
         }
 
         ws.onmessage = (event) => {
+            setLoading(false)
             const data = JSON.parse(event.data)
             setLpTokens(data)
         }
@@ -27,16 +29,14 @@ export default function Home() {
         }
 
         return () => {
-            if (ws.readyState === 1) {
-                ws.close()
-            }
+            ws.close()
         }
     }, [])
 
     return (
         <main className="flex min-h-screen flex-col bg-[#0A0A0A] w-screen">
             <div>
-                <Dashboard lpTokens={lpTokens} />
+                <Dashboard lpTokens={lpTokens} loading={loading} />
             </div>
         </main>
     )

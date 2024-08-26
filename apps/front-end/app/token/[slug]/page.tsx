@@ -1,4 +1,6 @@
 'use client'
+import { Card } from '@/components/Card'
+import CandlestickChart from '@/components/Chart'
 import Chart from 'react-apexcharts'
 
 export default function TokenPage({ params }: { params: { slug: string } }) {
@@ -269,20 +271,23 @@ export default function TokenPage({ params }: { params: { slug: string } }) {
         },
     }
     return (
-        <div className="flex gap-1 m-2 h-full">
-            <div className="flex-[4]">
-                <div className="rounded-lg border-[#242424] border-[0.5px] bg-[#171616] h-[420px] p-3">
-                    <Chart
+        <div className="flex gap-1 m-2 h-full ">
+            <div className="flex-[4] flex flex-col">
+                <Card>
+                    {/* <Chart
                         series={chartOptions.series}
                         type="candlestick"
                         width="100%"
                         height={400}
                         options={chartOptions.options}
-                    />
+                    /> */}
+                    <CandlestickChart />
+                </Card>
+                <div className="flex-grow mt-2">
+                    <div className="flex flex-row justify-between"></div>
                 </div>
-                <div className="rounded-lg border-[#242424] border-[0.5px] bg-[#171616] p-3 mt-2 h-[31vh]"></div>
             </div>
-            <div className="flex-[1] w-full min-h-[88vh] rounded-lg border-[#242424] border-[0.5px] bg-[#171616]"></div>
+            <Card className="flex-[1] w-full min-h-full" />
         </div>
     )
 }

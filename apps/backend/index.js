@@ -1,8 +1,11 @@
 import { Connection, PublicKey } from '@solana/web3.js'
 import { createClient } from 'redis'
+import dotenv from 'dotenv'
+dotenv.config({ path: '../../.env' })
 
 const SESSION_HASH = 'QNDEMO' + Math.ceil(Math.random() * 1e9) // Random unique identifier for your session
 
+console.log('public key', process.env.RAYDIUM_PUBLIC_KEY)
 const raydium = new PublicKey(process.env.RAYDIUM_PUBLIC_KEY)
 const client = createClient()
 await client.connect()
@@ -10,9 +13,21 @@ await client.connect()
 client.on('error', (err) => console.log('Redis Client Error', err))
 
 const connection = new Connection(process.env.RPC_ENDPOINT_URL, {
-    wsEndpoint: RPC_WEBSOCKET_URL,
+    wsEndpoint: process.env.RPC_WEBSOCKET_URL,
     httpHeaders: { 'x-session-hash': SESSION_HASH },
 })
+
+async function getMetadataPDA(mint) {
+    const [publicKey] = await web3.PublicKey.findProgramAddress(
+        [
+            Buffer.from('metadata'),
+            Metadata.PROGRAM_ID.toBuffer(),
+            mint.toBuffer(),
+        ],
+        Metadata.PROGRAM_ID
+    )
+    return publicKey
+}
 
 // Monitor logs
 async function main(connection, programAddress) {
@@ -35,6 +50,7 @@ async function main(connection, programAddress) {
         },
         'finalized'
     )
+    // await getTokenInfo(tokenAAccount, connection)
 }
 
 // Parse transaction and filter data
@@ -95,12 +111,23 @@ async function getTokenInfo(tokenId, connection) {
                     console.log('err getTokenInfo', err)
                     return
                 }
-                console.table([{ logs, signature }])
-            }
+                console.log('reached logs', logs)
+                // getting parsed transaction logs
+                getTokenTransactions(signature, connection)
+            },
+            'confirmed'
         )
         await connection.removeAccountChangeListener(clientSubscriptionId)
     }
-    return
+}
+
+async function getTokenTransactions(txId, connection) {
+    const tx = await connection.getParsedTransaction(txId, {
+        maxSupportedTransactionVersion: 0,
+        commitment: 'confirmed',
+    })
+
+    console.log(`tx details: ${JSON.stringify(tx)}`)
 }
 
 function generateExplorerUrl(txId) {

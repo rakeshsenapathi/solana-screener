@@ -10,17 +10,30 @@ import {
     TableRow,
 } from '@/components/ui/table'
 import Image from 'next/image'
+import { useRouter } from 'next/navigation'
 
 interface DashboardProps {
     lpTokens: Token[]
 }
 
 const PopulateTableBody: React.FC<DashboardProps> = ({ lpTokens }) => {
+    const router = useRouter()
+
+    const handleNavigate = (token: Token) => {
+        if (token) {
+            const val = token.tokenA
+            router.push(`token/${val}`)
+        }
+    }
+
     return (
         <TableBody>
             {lpTokens.map((token, id) => (
-                <TableRow>
-                    <TableCell className="font-medium">
+                <TableRow key={token.tokenA}>
+                    <TableCell
+                        className="font-medium cursor-pointer"
+                        onClick={() => handleNavigate(token)}
+                    >
                         <span className="flex flex-row gap-3">
                             <span className="text-gray-400">{`#${
                                 id + 1

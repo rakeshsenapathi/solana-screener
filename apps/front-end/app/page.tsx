@@ -1,17 +1,13 @@
 'use client'
 
 import { Dashboard } from '@/components/Dashboard'
-import { Header } from '@/components/Header'
 import { Token } from '@/types'
 import { useEffect, useState } from 'react'
 
 export default function Home() {
     const [lpTokens, setLpTokens] = useState<Token[]>([])
-
     useEffect(() => {
         const ws = new WebSocket(`ws://localhost:4000`)
-
-        console.log('ws', ws)
 
         ws.onopen = () => {
             console.log('web socket client connection opened')
@@ -38,9 +34,8 @@ export default function Home() {
     }, [])
 
     return (
-        <main className="flex min-h-screen flex-col items-center justify-between bg-[#0A0A0A]">
+        <main className="flex min-h-screen flex-col bg-[#0A0A0A] w-screen">
             <div>
-                <Header />
                 <Dashboard lpTokens={lpTokens} />
             </div>
         </main>
